@@ -6,7 +6,7 @@
 /*   By: zouddach <zouddach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 23:48:59 by zouddach          #+#    #+#             */
-/*   Updated: 2024/02/19 20:48:11 by zouddach         ###   ########.fr       */
+/*   Updated: 2024/02/21 16:59:35 by zouddach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,22 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <errno.h>
 
 typedef struct s_pipex
 {
     char	**cmd1;
     char	**cmd2;
-    char	*cmd1_output;
-    char	*cmd2_output;
 	char	**env_path;
+	int		path_length;
     char	*infile;
     char	*outfile;
 }                t_pipex;
 
-// int		ft_strncmp(const char *str1, const char *str2, size_t n);
+int	ft_strncmp(char *str1, char *str2, size_t n);
 char	**ft_split(char *str, char c);
-// size_t	ft_strlen(const char *str);
-// char	*ft_strdup(const char *str);
-// char	*ft_strjoin(char const *s1, char const *s2);
+void	ft_putstr_fd(char *s, int fd);
+size_t	ft_strlen(char *str);
+char	*ft_strjoin(char *s1, char *s2);
 
 #endif

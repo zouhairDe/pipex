@@ -6,91 +6,122 @@
 /*   By: zouddach <zouddach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 20:21:18 by zouddach          #+#    #+#             */
-/*   Updated: 2024/02/19 20:30:54 by zouddach         ###   ########.fr       */
+/*   Updated: 2024/02/21 15:10:55 by zouddach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "pipex.h" 
 
-int checksep(char c)
+static int	checksep(char c, char sep)
 {
-    if (c == ' ' || c == '\n' || c == '\t')
-        return (1);
-    return (0);
+	if (c == sep)
+		return (1);
+	return (0);
 }
 
-int countWords(char *str)
+static int	ft_countwords(char *str, char sep)
 {
-    int count = 0;
-    while (*str)
-    {
-        while (*str && checksep(*str))
-            str++;
-        if (*str)
-            count++;
-        while (*str && !checksep(*str))
-            str++;
-    }
-    return (count);
+	int	i;
+	int	words;
+
+	words = 0;
+	i = 0;
+	while (str[i])
+	{
+		while (str[i] && checksep(str[i], sep))
+			i++;
+		if (str[i] && !checksep(str[i], sep))
+		{
+			i++;
+			words++;
+		}
+		while (str[i] && !checksep(str[i], sep))
+			i++;
+	}
+	return (words);
 }
 
-int ft_strlen(char *str)
+static int	sstrlen(char *str, char c)
 {
-    int i = 0;
-    while(str[i] && !checksep(str[i]))
-        i++;
-    return (i);
+	int	i;
+
+	i = 0;
+	while (str[i] && !checksep(str[i], c))
+		i++;
+	return (i);
 }
 
-char *allocatedWords(char *str)
+static char	*mallocwords(char *str, char **words, char c, int t)
 {
-    int i = 0;
-    char *word = (char *)malloc(sizeof(char) * (ft_strlen(str) + 1));
-    if (word == NULL)
-        return (NULL);
-    while (str[i] && !checksep(str[i]))
-    {
-        word[i] = str[i];
-        i++;
-    }
-    word[i] = '\0';
-    return (word);
+	int		i;
+	int		j;
+	char	*word;
+
+	j = 0;
+	i = 0;
+	word = (char *)malloc(sizeof(char) * (sstrlen(str, c) + 1));
+	if (!word)
+	{
+		while (i < t)
+			free(words[i++]);
+		return (NULL);
+	}
+	while (str[i] && !checksep(str[i], c))
+	{
+		word[j] = str[i];
+		i++;
+		j++;
+	}
+	word[j] = '\0';
+	return (word);
 }
 
-char **ft_split(char *str)
+char	**ft_split(char *str, char c)
 {
-    char **words = (char **)malloc(sizeof(char *) * (countWords(str) + 1));
-    if (words == NULL)
-        return (NULL);
-    int i = 0;
-    while(*str)
-    {
-        while (*str && checksep(*str))
-            str++;
-        if (*str && !checksep(*str))
-        {
-            words[i] = allocatedWords(str);
-            i++;
-        }
-        while (*str && !checksep(*str))
-            str++;
-    }
-    words[i] = NULL;
-    return (words);
+	char	**words;
+	int		j;
+
+	j = 0;
+	if (!str)
+		return (NULL);
+	words = (char **)malloc(sizeof(char *) * (ft_countwords(str, c) + 1));
+	if (!words)
+		return (NULL);
+	while (*str)
+	{
+		while (*str && checksep(*str, c))
+			str++;
+		if (*str && !checksep(*str, c))
+		{
+			words[j] = mallocwords(str, words, c, j);
+			if (!words[j])
+				return (free(words), NULL);
+			j++;
+		}
+		while (*str && !checksep(*str, c))
+			str++;
+	}
+	words[j] = NULL;
+	return (words);
 }
 
-// int main()
+// int main(int c, char **d, char **env)
 // {
-//     char **arr;
-//     char phrase[] = "   Hello,  guys!  how are you?";
-//     arr = ft_split(phrase);
-//     for (int i = 0; arr[i] != NULL; i++)
-//     {
-//         printf("%s\n", arr[i]);
-//         free(arr[i]);
-//     }
+// 	int i = 0;
+// 	char **f;
+//     while (env[i])
+// 	{
+// 		if (strncmp(env[i], "PATH=", 5) == 0)
+// 		{
+// 			f = ft_split(env[i] + 5, ':');
+// 			// for (int i = 0; pipex->env_path[i]; i++)
+// 			// {
+// 			// 	printf("path[%d]: %s\n", i, pipex->env_path[i]);
+// 			// }
+// 			return ;
+// 		}
+// 		i++;
+// 	}
 //     free(arr);
 //     return 0;
 // }

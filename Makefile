@@ -6,14 +6,14 @@
 #    By: zouddach <zouddach@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/24 23:30:21 by zouddach          #+#    #+#              #
-#    Updated: 2024/02/19 20:31:09 by zouddach         ###   ########.fr        #
+#    Updated: 2024/02/20 10:04:15 by zouddach         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = pipex
 CC = CC
 CFLAGS = -Wall -Werror -Wextra
-SRC = SRC/pipex.c SRC/ft_split.c
+SRC = SRC/pipex.c SRC/ft_split.c SRC/utils.c
 OBJ = $(SRC:.c=.o)
 
 %.o: %.c pipex.h
