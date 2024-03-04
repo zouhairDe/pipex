@@ -6,7 +6,7 @@
 /*   By: zouddach <zouddach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 10:02:50 by zouddach          #+#    #+#             */
-/*   Updated: 2024/02/21 17:16:22 by zouddach         ###   ########.fr       */
+/*   Updated: 2024/02/24 21:31:55 by zouddach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,5 @@ char	*ft_strjoin(char *s1, char *s2)
 		s2++;
 	}
 	*dest = '\0';
-	free(s1 - lens1);
-	return (dest - lens1 - lens2);
+	return ((free(s1 - lens1)), dest - lens1 - lens2);
 }
