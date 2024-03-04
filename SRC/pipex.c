@@ -6,7 +6,7 @@
 /*   By: zouddach <zouddach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 01:27:09 by zouddach          #+#    #+#             */
-/*   Updated: 2024/03/04 16:23:36 by zouddach         ###   ########.fr       */
+/*   Updated: 2024/03/04 23:48:47 by zouddach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,15 @@ void	simulate_pipex(t_pipex *pipex)
 		first_child(pipex, fd);
 	else
 		second_shild(pipex, fd, pid);
+	ft_free_all(pipex);
+	close(fd[0]);
+	close(fd[1]);
 }
 
 void	add_slash(char **path)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
 
 	i = 0;
 	while (path[i])
@@ -114,7 +117,7 @@ int	main(int ac, char **av, char **env)
 		ft_putstr_fd("Error: Wrong number of arguments\n", 2);
 		return (0);
 	}
-	if (!env[0])
+	if (!env[0] || !env)
 	{
 		ft_putstr_fd("Error: No environment\n", 2);
 		return (0);
@@ -131,4 +134,5 @@ int	main(int ac, char **av, char **env)
 	get_path(&pipex, env);
 	simulate_pipex(&pipex);
 	wait(NULL);
+	return (0);
 }

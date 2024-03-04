@@ -6,7 +6,7 @@
 /*   By: zouddach <zouddach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 21:32:33 by zouddach          #+#    #+#             */
-/*   Updated: 2024/03/04 16:21:43 by zouddach         ###   ########.fr       */
+/*   Updated: 2024/03/04 23:38:10 by zouddach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,17 @@
 void	second_shild(t_pipex *pipex, int *fd, pid_t pid)
 {
 	int		i;
+	int		file;
 	char	*r;
 
 	pid = fork();
 	if (pid == 0)
 	{
 		i = 0;
+		file = open(pipex->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0666);
 		close(fd[1]);
 		dup2(fd[0], 0);
-		dup2(open(pipex->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0666), 1);
+		dup2(file, 1);
 		close(fd[0]);
 		while (i < pipex->path_length)
 		{
