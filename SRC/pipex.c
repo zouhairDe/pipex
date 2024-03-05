@@ -6,7 +6,7 @@
 /*   By: zouddach <zouddach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 01:27:09 by zouddach          #+#    #+#             */
-/*   Updated: 2024/03/04 23:48:47 by zouddach         ###   ########.fr       */
+/*   Updated: 2024/03/05 20:04:31 by zouddach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,7 @@ void	simulate_pipex(t_pipex *pipex)
 		first_child(pipex, fd);
 	else
 		second_shild(pipex, fd, pid);
-	ft_free_all(pipex);
-	close(fd[0]);
-	close(fd[1]);
+	(ft_free_all(pipex), close(fd[0]), close(fd[1]));
 }
 
 void	add_slash(char **path)

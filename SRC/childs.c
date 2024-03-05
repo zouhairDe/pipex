@@ -6,7 +6,7 @@
 /*   By: zouddach <zouddach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 21:32:33 by zouddach          #+#    #+#             */
-/*   Updated: 2024/03/04 23:38:10 by zouddach         ###   ########.fr       */
+/*   Updated: 2024/03/05 20:01:22 by zouddach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	second_shild(t_pipex *pipex, int *fd, pid_t pid)
 {
 	int		i;
 	int		file;
-	char	*r;
 
 	pid = fork();
 	if (pid == 0)
@@ -27,16 +26,16 @@ void	second_shild(t_pipex *pipex, int *fd, pid_t pid)
 		dup2(fd[0], 0);
 		dup2(file, 1);
 		close(fd[0]);
+		close(file);
 		while (i < pipex->path_length)
 		{
-			r = ft_strjoin(pipex->env_path[i], pipex->cmd2[0]);
-			if (access(r, F_OK) == -1)
+			pipex->env_path[i] = ft_strjoin(pipex->env_path[i], pipex->cmd2[0]);
+			if (access(pipex->env_path[i], F_OK) == -1)
 				i++;
 			else
 				break ;
-			free(r);
 		}
-		execve(r, pipex->cmd2, NULL);
+		execve(pipex->env_path[i], pipex->cmd2, NULL);
 	}
 	else if (pid < 0)
 		(ft_free_all(pipex), perror("Fork"), exit(EXIT_FAILURE));
@@ -46,7 +45,6 @@ void	first_child(t_pipex *pipex, int *fd)
 {
 	int		d;
 	int		i;
-	char	*r;
 
 	d = open(pipex->infile, O_RDONLY);
 	if (d < 0)
@@ -59,12 +57,11 @@ void	first_child(t_pipex *pipex, int *fd)
 	close(d);
 	while (i < pipex->path_length)
 	{
-		r = ft_strjoin(pipex->env_path[i], pipex->cmd1[0]);
-		if (access(r, F_OK) == -1)
+		pipex->env_path[i] = ft_strjoin(pipex->env_path[i], pipex->cmd1[0]);
+		if (access(pipex->env_path[i], F_OK) == -1)
 			i++;
 		else
 			break ;
-		free(r);
 	}
-	execve(r, pipex->cmd1, NULL);
+	execve(pipex->env_path[i], pipex->cmd1, NULL);
 }
