@@ -36,6 +36,8 @@ size_t	ft_strlen(char *str);
 char	*ft_strjoin(char *s1, char *s2);
 void	second_shild(t_pipex *pipex, int *fd, pid_t pid);
 void	first_child(t_pipex *pipex, int *fd);
+void	get_backupenv(t_pipex *pipex);
+void	get_path(t_pipex *pipex, char **env);
 void	ft_free_all(t_pipex *pipex);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: zouddach <zouddach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 01:27:09 by zouddach          #+#    #+#             */
-/*   Updated: 2024/03/05 20:04:31 by zouddach         ###   ########.fr       */
+/*   Updated: 2024/03/10 00:38:58 by zouddach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,13 +113,12 @@ int	main(int ac, char **av, char **env)
 	if (ac != 5)
 	{
 		ft_putstr_fd("Error: Wrong number of arguments\n", 2);
-		return (0);
+		exit(EXIT_FAILURE);
 	}
 	if (!env[0] || !env)
-	{
-		ft_putstr_fd("Error: No environment\n", 2);
-		return (0);
-	}
+		get_backupenv(&pipex);
+	else
+		get_path(&pipex, env);
 	pipex.cmd1 = ft_split(av[2], ' ');
 	pipex.cmd2 = ft_split(av[3], ' ');
 	pipex.infile = av[1];
@@ -129,7 +128,6 @@ int	main(int ac, char **av, char **env)
 		ft_putstr_fd("Error: Cant access files\n", 2);
 		exit(EXIT_FAILURE);
 	}
-	get_path(&pipex, env);
 	simulate_pipex(&pipex);
 	wait(NULL);
 	return (0);
