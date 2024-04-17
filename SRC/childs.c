@@ -6,36 +6,20 @@
 /*   By: zouddach <zouddach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 21:32:33 by zouddach          #+#    #+#             */
-/*   Updated: 2024/03/10 00:26:47 by zouddach         ###   ########.fr       */
+/*   Updated: 2024/04/15 13:20:55 by zouddach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	get_backupenv(t_pipex *pipex)
+void	ft_save_lines2(t_pipex *pipex)
 {
-	pipex->env_path = malloc(sizeof(char *) * 2);
-	pipex->env_path[0] = ft_strjoin("PATH=", "/Users/zouddach/.npm-global/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:\
-/sbin:/usr/local/munki:/Library/Apple\
-/usr/bin:/Users/zouddach/.npm-global/bin");
-	pipex->env_path[1] = NULL;
-	get_path(pipex, pipex->env_path);
-}
+	int	i;
 
-void	second_shild(t_pipex *pipex, int *fd, pid_t pid)
-{
-	int		i;
-	int		file;
-
-	pid = fork();
-	if (pid == 0)
+	i = 0;
+	if (!ft_have_slash(pipex->cmd2))
 	{
-		i = 0;
-		file = open(pipex->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0666);
-		close(fd[1]);
-		(dup2(file, 1), dup2(fd[0], 0));
-		(close(fd[0]), close(file));
-		while (i < pipex->path_length)
+		while (pipex->env_path[i])
 		{
 			pipex->env_path[i] = ft_strjoin(pipex->env_path[i], pipex->cmd2[0]);
 			if (access(pipex->env_path[i], F_OK) == -1)
@@ -43,37 +27,94 @@ void	second_shild(t_pipex *pipex, int *fd, pid_t pid)
 			else
 				break ;
 		}
-		if (!pipex->cmd2[0] || i == pipex->path_length)
-			(perror(pipex->cmd2[0]), exit(EXIT_FAILURE));
+		if (!pipex->cmd2[0] || pipex->env_path[i] == NULL)
+		{
+			perror(pipex->cmd2[0]);
+			exit(EXIT_FAILURE);
+		}
 		execve(pipex->env_path[i], pipex->cmd2, NULL);
 	}
-	else if (pid < 0)
-		(ft_free_all(pipex), perror("Fork"), exit(EXIT_FAILURE));
+	else
+		execve(pipex->cmd2[0], pipex->cmd2, NULL);
+	perror(pipex->cmd2[0]);
+	ft_free_all(pipex);
+	exit(EXIT_FAILURE);
 }
 
-void	first_child(t_pipex *pipex, int *fd)
+void	ft_second_shild(t_pipex *pipex, int *fd, pid_t pid)
 {
-	int		d;
+	int	file;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		file = open(pipex->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0666);
+		if (file < 0)
+			perror(pipex->outfile);
+		close(fd[1]);
+		if (dup2(file, 1) < 0 || dup2(fd[0], 0) < 0)
+		{
+			close(fd[0]);
+			close(file);
+			exit(EXIT_FAILURE);
+		}
+		close(fd[0]);
+		close(file);
+		ft_save_lines2(pipex);
+	}
+	else if (pid < 0)
+	{
+		ft_free_all(pipex);
+		perror("Fork");
+		exit(EXIT_FAILURE);
+	}
+}
+
+void	ft_save_lines(t_pipex *pipex)
+{
+	char	*path;
 	int		i;
+
+	i = 0;
+	if (!ft_have_slash(pipex->cmd1))
+	{
+		while (pipex->env_path[i])
+		{
+			path = ft_strjoin(pipex->env_path[i], pipex->cmd1[0]);
+			if (access(path, F_OK) != -1)
+				break ;
+			free(path);
+			i++;
+		}
+		if (!pipex->cmd1[0] || path == NULL)
+		{
+			perror(pipex->cmd1[0]);
+			exit(EXIT_FAILURE);
+		}
+		execve(path, pipex->cmd1, NULL);
+	}
+	execve(pipex->cmd1[0], pipex->cmd1, NULL);
+	perror(pipex->cmd1[0]);
+	exit(EXIT_FAILURE);
+}
+
+void	ft_first_child(t_pipex *pipex, int *fd)
+{
+	int	d;
+	int	i;
 
 	d = open(pipex->infile, O_RDONLY);
 	if (d < 0)
 		perror(pipex->infile);
 	i = 0;
 	close(fd[0]);
-	dup2(fd[1], 1);
-	dup2(d, 0);
+	if (dup2(fd[1], 1) < 0 || dup2(d, 0) < 0)
+	{
+		close(fd[1]);
+		close(d);
+		exit(EXIT_FAILURE);
+	}
 	close(fd[1]);
 	close(d);
-	while (i < pipex->path_length)
-	{
-		pipex->env_path[i] = ft_strjoin(pipex->env_path[i], pipex->cmd1[0]);
-		if (access(pipex->env_path[i], F_OK) == -1)
-			i++;
-		else
-			break ;
-	}
-	if (!pipex->cmd1[0] || i == pipex->path_length)
-		(perror(pipex->cmd1[0]), exit(EXIT_FAILURE));
-	execve(pipex->env_path[i], pipex->cmd1, NULL);
+	ft_save_lines(pipex);
 }

@@ -6,30 +6,38 @@
 #    By: zouddach <zouddach@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/24 23:30:21 by zouddach          #+#    #+#              #
-#    Updated: 2024/02/24 21:39:58 by zouddach         ###   ########.fr        #
+#    Updated: 2024/04/17 10:48:46 by zouddach         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = pipex
-CC = CC
-CFLAGS = -Wall -Werror -Wextra
-SRC = SRC/pipex.c SRC/ft_split.c SRC/utils.c SRC/childs.c
-OBJ = $(SRC:.c=.o)
+CC = cc
+CFLAGS = -Wall -Wextra -Werror
+SRC_DIR = SRC/
+OBJ_DIR = OBJ/
+HEADER = $(addprefix $(SRC_DIR), pipex.h)
+FILES = pipex.c utils.c childs.c ft_split.c utils2.c
+SRC = $(addprefix $(SRC_DIR), $(FILES))
+OBJ = $(addprefix $(OBJ_DIR), $(FILES:.c=.o))
 
-%.o: %.c pipex.h
+all: $(OBJ_DIR) $(NAME)
+
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-all: $(NAME)
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)
 
 $(NAME): $(OBJ)
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
 clean:
-	@rm $(OBJ)
+	@rm -f $(OBJ)
+	@rmdir $(OBJ_DIR) 2> /dev/null || true
 
 fclean: clean
-	@rm $(NAME)
+	@rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: clean fclean all re
+.PHONY: $(OBJ_DIR) clean fclean all re

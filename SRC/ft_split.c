@@ -6,7 +6,7 @@
 /*   By: zouddach <zouddach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 20:21:18 by zouddach          #+#    #+#             */
-/*   Updated: 2024/02/21 15:10:55 by zouddach         ###   ########.fr       */
+/*   Updated: 2024/04/17 10:48:57 by zouddach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,24 +104,3 @@ char	**ft_split(char *str, char c)
 	words[j] = NULL;
 	return (words);
 }
-
-// int main(int c, char **d, char **env)
-// {
-// 	int i = 0;
-// 	char **f;
-//     while (env[i])
-// 	{
-// 		if (strncmp(env[i], "PATH=", 5) == 0)
-// 		{
-// 			f = ft_split(env[i] + 5, ':');
-// 			// for (int i = 0; pipex->env_path[i]; i++)
-// 			// {
-// 			// 	printf("path[%d]: %s\n", i, pipex->env_path[i]);
-// 			// }
-// 			return ;
-// 		}
-// 		i++;
-// 	}
-//     free(arr);
-//     return 0;
-// }
